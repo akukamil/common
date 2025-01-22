@@ -17,7 +17,7 @@ my_ws={
 	
 	s_url:'',
 		
-	init(game_name){		
+	init(){		
 		this.s_url=`wss://timewebmtgames.ru:8443/${game_name}/`+my_data.uid;
 		fbs.ref('WSDEBUG/'+my_data.uid).remove();
 		fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'init'});
