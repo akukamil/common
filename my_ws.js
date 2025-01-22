@@ -46,9 +46,9 @@ my_ws={
 		
 	},
 	
-	reconnect(){
+	reconnect(reason){
 				
-		fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'reconnect'});
+		fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'reconnect',reason:reason||'noreason'});
 
 		if (this.socket) {
 			this.socket.onopen = null;
@@ -77,7 +77,7 @@ my_ws={
 		
 		this.socket.onmessage = event => {
 			
-			this.reset_keep_alive('onmessage');
+			//this.reset_keep_alive('onmessage');
 			const msg=JSON.parse(event.data);
 			//console.log("Получено от сервера:", msg);
 			
