@@ -25,7 +25,7 @@ my_ws={
 		if(this.socket.readyState===1) return;
 		return new Promise(resolve=>{
 			this.connect_resolver=resolve;
-			this.reconnect();
+			this.reconnect('init');
 		})
 	},
 	
@@ -67,6 +67,7 @@ my_ws={
 			this.connect_resolver();
 			this.reconnect_time=0;
 			this.open_tm=Date.now();
+			fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'onopen'});
 			
 			//обновляем подписки
 			for (const path in this.child_added)				
@@ -109,7 +110,7 @@ my_ws={
 			}			
 			
 			console.log(`reconnecting in ${this.reconnect_time*0.001} seconds:`, event);
-			setTimeout(()=>{this.reconnect()},this.reconnect_time);				
+			setTimeout(()=>{this.reconnect('re')},this.reconnect_time);				
 		};
 
 		this.socket.onerror = error => {
