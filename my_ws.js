@@ -14,6 +14,7 @@ my_ws={
 	keep_alive_timer:0,	
 	keep_alive_time:45000,
 	open_tm:0,
+	reconnect_num:0,
 	
 	s_url:'',
 		
@@ -101,13 +102,21 @@ my_ws={
 			if (['not_alive','no_uid','kill','sleep'].includes(event.reason)) return;
 					
 			if (this.open_tm){
-				const working_time=Date.now()-this.open_tm;
+				
+				//если продержались онлайн достаточно долго то сбрасываем счетчик
+				const tm=Date.now();
+				const open_tm_of_socket=tm-this.open_tm;
+				if (open_tm_of_socket>180000) this.reconnect_num=0;
+						
 				this.reconnect_time=10000;
-				if (working_time<this.keep_alive_time)					
+				if (this.reconnect_num>12) this.reconnect_time+=50000;
+				if (open_tm_of_socket<this.keep_alive_time)					
 					this.keep_alive_time=Math.max(10000,this.keep_alive_time-5000);					
 			}else{
 				this.reconnect_time=Math.min(60000,Math.floor(this.reconnect_time*1.5));
 			}			
+			
+			this.reconnect_num++;		
 			
 			console.log(`reconnecting in ${this.reconnect_time*0.001} seconds:`, event);
 			setTimeout(()=>{this.reconnect('re')},this.reconnect_time);				
