@@ -108,7 +108,7 @@ my_ws={
 				const open_tm_of_socket=tm-this.open_tm;
 				if (open_tm_of_socket>180000) this.reconnect_num=0;
 						
-				this.reconnect_time=10000;
+				this.reconnect_time=irnd(5000,15000);
 				if (this.reconnect_num>12) this.reconnect_time+=50000;
 				if (open_tm_of_socket<this.keep_alive_time)					
 					this.keep_alive_time=Math.max(10000,this.keep_alive_time-5000);					
