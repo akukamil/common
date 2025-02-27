@@ -30,6 +30,13 @@ my_ws={
 		})
 	},
 	
+	safe_send(data){
+		
+		this.reset_keep_alive('msg');
+		this.socket.send(JSON.stringify(data));
+		
+	},
+	
 	send_to_sleep(){	
 		
 		fbs.ref('WSDEBUG/'+my_data.uid).push({tm:Date.now(),event:'send_to_sleep'});

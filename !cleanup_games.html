@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<meta name="http-equiv" content="Content-type: text/html; charset=windows-1251">
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  
+  
+<script>
+
+start_cleanup();
+
+async function clean_corners() {
+
+	document.body.innerHTML += "Уголки<br />";
+	firebase.initializeApp({
+	  apiKey: "AIzaSyBZnSsCdbCve-tYjiH9f5JbGUDaGKWy074",
+	  authDomain: "m-game-27669.firebaseapp.com",
+	  databaseURL: "https://m-game-27669-default-rtdb.firebaseio.com",
+	  projectId: "m-game-27669",
+	  storageBucket: "m-game-27669.appspot.com",
+	  messagingSenderId: "571786945826",
+	  appId: "1:571786945826:web:7e8bd49c963bbea117317b",
+	  measurementId: "G-XFJD615P3L"
+	});	
+	await delete_old_players();
+	await new Promise((resolve, reject) => setTimeout(resolve, 7000));
+	await delete_zombie_players("states");
+	await delete_zombie_players("states1");
+	await delete_zombie_players("states2");
+	await delete_zombie_players("states3");	
+	await delete_zombie_players("states4");	
+	
+	
+	let blocked=await firebase.database().ref("blocked").once('value');
+	blocked=blocked.val();
+	let cur_ts = Date.now()
+	let block_removed=0;
+	if (blocked){
+		for (uid in blocked){
+		
+			const block_time=blocked[uid];
+			
+			//сколько времени в блоке
+			let blocked_time = cur_ts - block_time;
+			if (blocked_time > 864000000) {
+				firebase.database().ref("blocked/"+ uid).remove();
+				block_removed++;
+			}	
+		}	
+	}
+
+	console.log('удалено из блока: ',block_removed)
+
+	
+	await firebase.app().delete();
+	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
+
+}
+
+async function clean_chess() {
+	document.body.innerHTML += "Шахматы<br />";
+	firebase.initializeApp({
+		apiKey: "AIzaSyDhe74ztt7r4SlTpGsLuPSPvkfzjA4HdEE",
+		authDomain: "m-chess.firebaseapp.com",
+		databaseURL: "https://m-chess-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "m-chess",
+		storageBucket: "m-chess.appspot.com",
+		messagingSenderId: "243163949609",
+		appId: "1:243163949609:web:2496059afb5d1da50c4a38",
+		measurementId: "G-ETX732G8FJ"
+	});
+	await delete_old_players();
+	await new Promise((resolve, reject) => setTimeout(resolve, 7000));
+	await delete_zombie_players("states1");
+	await delete_zombie_players("states2");
+	await delete_zombie_players("states3");
+	await delete_zombie_players("states4");
+	await firebase.app().delete();
+	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
+
+}
+
+async function clean_balda() {
+	document.body.innerHTML += "Балда<br />";
+	firebase.initializeApp({
+		apiKey: "AIzaSyAFBbluhUs_MMWgz8OevYqAvLWjVe2YL-A",
+		authDomain: "balda-810c3.firebaseapp.com",
+		databaseURL: "https://balda-810c3-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "balda-810c3",
+		storageBucket: "balda-810c3.appspot.com",
+		messagingSenderId: "67392486991",
+		appId: "1:67392486991:web:e3b8b40f8c48670c1df43a"
+	});
+	await delete_old_players();
+	await new Promise((resolve, reject) => setTimeout(resolve, 7000));
+	await delete_zombie_players("states1");
+	await delete_zombie_players("states2");
+	await delete_zombie_players("states3");
+	await delete_zombie_players("states4");	
+	await delete_zombie_players("states5");		
+	await delete_zombie_players("states6");		
+	await delete_zombie_players("states7");
+	await delete_zombie_players("states8");
+	await delete_zombie_players("states9");
+	await firebase.app().delete();
+	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
+
+}
+
+async function clean_durak() {
+	document.body.innerHTML += "Дурак<br />";
+	firebase.initializeApp({
+		apiKey: "AIzaSyBQUa5_8Y199x5xT91sZMsPoD59fOmKckU",
+		authDomain: "durak-ca1cd.firebaseapp.com",
+		databaseURL: "https://durak-ca1cd-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "durak-ca1cd",
+		storageBucket: "durak-ca1cd.appspot.com",
+		messagingSenderId: "985954923087",
+		appId: "1:985954923087:web:ac332499e962122d28303a"
+	});
+	await delete_old_players();
+	await new Promise((resolve, reject) => setTimeout(resolve, 7000));
+	await delete_zombie_players("states1");
+	await delete_zombie_players("states2");
+	await delete_zombie_players("states3");
+	await firebase.app().delete();
+	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
+
+}
+
+async function clean_snow_words() {
+	document.body.innerHTML += "Слова из снега<br />";
+	firebase.initializeApp({
+		apiKey: "AIzaSyCDV8ndfTwbMq1jAv2VGxrWHLZ0mtvZJmQ",
+		authDomain: "word-battle-7c6b5.firebaseapp.com",
+		databaseURL: "https://word-battle-7c6b5-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "word-battle-7c6b5",
+		storageBucket: "word-battle-7c6b5.appspot.com",
+		messagingSenderId: "851590264454",
+		appId: "1:851590264454:web:e7185c5fa1fa1b32b68307"
+	});
+	await delete_old_players();
+	await new Promise((resolve, reject) => setTimeout(resolve, 7000));
+	await delete_zombie_players("states");
+	await firebase.app().delete();
+	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
+}
+
+async function clean_poker() {
+	document.body.innerHTML += "Покер<br />";
+	firebase.initializeApp({
+		apiKey: "AIzaSyDEQoP_xNrecObpO0sHPOisMsu01JCmP6Q",
+		authDomain: "poker-cd9ed.firebaseapp.com",
+		databaseURL: "https://poker-cd9ed-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "poker-cd9ed",
+		storageBucket: "poker-cd9ed.appspot.com",
+		messagingSenderId: "721039342577",
+		appId: "1:721039342577:web:808922ef505e8dc148e250"
+	});
+
+	await delete_old_playersPOKER();
+	await firebase.app().delete();
+	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
+
+}
+
+async function clean_quoridor() {
+	document.body.innerHTML += "Quoridor<br />";
+	firebase.initializeApp({
+		apiKey: "AIzaSyDwyhzpCq06nXWtzTfPZ86I0jI_iUedJDg",
+		authDomain: "quoridor-e5c40.firebaseapp.com",
+		databaseURL: "https://quoridor-e5c40-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "quoridor-e5c40",
+		storageBucket: "quoridor-e5c40.appspot.com",
+		messagingSenderId: "114845860106",
+		appId: "1:114845860106:web:fa020d476b1f1c28853af3"
+	});
+	await delete_old_players();
+	await new Promise((resolve, reject) => setTimeout(resolve, 7000));
+	await delete_zombie_players("states");
+	await firebase.app().delete();
+	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
+
+}
+
+async function clean_domino() {
+	document.body.innerHTML += "Domino<br />";
+	firebase.initializeApp({
+		apiKey: "AIzaSyAlebXZrabhIEEK8y0Ro1U0SQyK3ViL0rc",
+		authDomain: "domino-ad330.firebaseapp.com",
+		databaseURL: "https://domino-ad330-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "domino-ad330",
+		storageBucket: "domino-ad330.appspot.com",
+		messagingSenderId: "535720490474",
+		appId: "1:535720490474:web:c3bf5579887a3334bfee93"
+	});
+	await delete_old_players();
+	await new Promise((resolve, reject) => setTimeout(resolve, 7000));
+	await delete_zombie_players("states1");
+	await delete_zombie_players("states2");
+	await delete_zombie_players("states3");
+	await delete_zombie_players("states4");
+	await delete_zombie_players("states5");
+	await delete_zombie_players("states6");
+	await delete_zombie_players("states7");
+	await delete_zombie_players("states8");
+	await firebase.app().delete();
+	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
+
+}
+
+async function start_cleanup() {
+
+	await clean_corners();
+	await clean_chess();
+	await clean_balda();
+	await clean_durak();
+	await clean_snow_words();
+	await clean_poker();	
+	await clean_quoridor();	
+	await clean_domino();	
+	document.body.innerHTML += "Завершено!";
+	
+}
+
+//очистить зомби игроков из комнатах
+async function delete_zombie_players(room) {	
+
+	
+	try {
+	var snapshot = await firebase.database().ref(room).get();	
+	} catch (e){
+		console.log(e);
+	}
+	
+
+	let data = snapshot.val();
+	let total_removed = 0;
+	
+	if (data===null) return;
+	
+	//создаем массив для последующей работы
+	let uids = Object.keys(data);
+	let _data = [];
+	let cur_ts = Date.now()
+	for (let i = 0 ; i < uids.length ; i++) {
+	
+		//добавляем инфу о последнем посещении
+		let uid = uids[i];
+		let snapshot2 = await firebase.database().ref("players/" + uids[i] + "/tm").once('value');
+		let player_last_seen=snapshot2.val();
+		
+		//не видно уже 1 час но есть в комнате
+		let not_seen = cur_ts - player_last_seen;
+		if (not_seen > 360000) {
+			firebase.database().ref(room+ "/" + uid).remove();
+			total_removed++;
+		}
+	}	
+	
+	document.body.innerHTML += room +" - Удалено зомби игроков: "+total_removed +"<br />";
+
+
+}
+
+//удалить старых игроков
+async function delete_old_players() {	
+
+	let snapshot = await firebase.database().ref("players").once("value");
+	let total_removed=0;
+	let cur_ts=Date.now();
+	var data = snapshot.val();
+	if (data===null) return;
+	data = Object.keys(data).map((key) => [key, data[key].rating, data[key].tm]);
+		
+	for (let p of data) {	
+	
+		//проверяем на валидность рейтинга
+		if (p[1] === undefined) {
+			try {
+			firebase.database().ref("players/"+p[0]).remove();
+			} catch (e)	{
+			console.log(e);
+			document.body.innerHTML += `Ошибка при удалении ${p[0]}`;
+			}
+			total_removed++;
+		}	
+		
+		let  days_without_visit=(cur_ts-p[2])/86400000;
+		let days_without_allowed=30;
+		if (days_without_visit>days_without_allowed) {
+
+			await firebase.database().ref("players/"+p[0]).remove();
+			console.log('Удален '+ p[0] + ' rating: '+ p[1])
+
+			total_removed++;
+		}	
+	}
+	
+	
+	document.body.innerHTML += "Удалено старых игроков: "+total_removed +"<br />";
+
+}
+
+//удалить старых игроков покера
+async function delete_old_playersPOKER() {	
+
+	let snapshot = await firebase.database().ref("players").once("value");
+	let total_removed=0;
+	const cur_ts=Date.now();
+	let data = snapshot.val();
+	if (data===null) return;
+	
+	//немного меняем данные
+	data = Object.keys(data).map(key => [key, data[key]?.PUB?.rating, data[key]?.tm]);
+		
+	for (let p of data) {	
+	
+		//проверяем на валидность рейтинга
+		if (p[1] === undefined || p[2]===undefined) {
+			try {
+				console.log('Удален из-за ощибки '+ p[0] + ' rating: '+ p[1])
+				firebase.database().ref("players/"+p[0]).remove();
+			} catch (e)	{
+				console.log(e);
+				document.body.innerHTML += `Ошибка при удалении ${p[0]}`;
+			}
+			total_removed++;
+		}	
+		
+		const days_without_visit=(cur_ts-p[2])/86400000;
+		const days_without_allowed=10+25*(Math.max(Math.min(p[1],1800),1400)-1400)/400;
+		if (days_without_visit>days_without_allowed) {
+
+			await firebase.database().ref("players/"+p[0]).remove();
+			console.log('Удален '+ p[0] + ' rating: '+ p[1])
+
+			total_removed++;
+		}	
+	}
+	
+	
+	document.body.innerHTML += "Удалено старых игроков: "+total_removed +"<br />";
+
+}
+
+
+	
+</script>
+
+<body>
+
+</body>
+</html>
