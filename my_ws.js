@@ -15,6 +15,7 @@ my_ws={
 	keep_alive_time:45000,
 	open_tm:0,
 	reconnect_num:0,
+	req_id:0,
 	
 	s_url:'',
 		
@@ -30,11 +31,8 @@ my_ws={
 		})
 	},
 	
-	safe_send(data){
-		
-		this.reset_keep_alive('msg');
-		this.socket.send(JSON.stringify(data));
-		
+	safe_send(data){		
+		this.socket.send(JSON.stringify(data));		
 	},
 	
 	send_to_sleep(){	
@@ -71,7 +69,7 @@ my_ws={
 		this.socket = new WebSocket(this.s_url);
 				
 		this.socket.onopen = () => {
-			console.log('Connected to server!');
+			console.log('connected to server!');
 			this.connect_resolver();
 			this.reconnect_time=0;
 			this.open_tm=Date.now();
@@ -79,14 +77,13 @@ my_ws={
 			
 			//обновляем подписки
 			for (const path in this.child_added)				
-				this.socket.send(JSON.stringify({cmd:'child_added',path}))					
+				this.safe_send({cmd:'child_added',path})					
 			
 			this.reset_keep_alive('onopen');
 		};			
 		
 		this.socket.onmessage = event => {
 			
-			//this.reset_keep_alive('onmessage');
 			const msg=JSON.parse(event.data);
 			//console.log("Получено от сервера:", msg);
 			
@@ -94,6 +91,10 @@ my_ws={
 				this.child_added[msg.node]?.(msg);
 			
 			if (msg.event==='get')
+				if (this.get_resolvers[msg.req_id])
+					this.get_resolvers[msg.req_id](msg.data);
+				
+			if (msg.event==='get_tms')
 				if (this.get_resolvers[msg.req_id])
 					this.get_resolvers[msg.req_id](msg.data);
 
@@ -153,51 +154,51 @@ my_ws={
 		
 	},
 	
-	get(path,limit_last){		
-		return new Promise(resolve=>{
-			
-			const req_id=irnd(1,999999);
-						
+	make_req(cmd, params = {}) {
+		return new Promise(resolve => {
+			this.req_id++;
+
 			const timeoutId = setTimeout(() => {
-				delete this.get_resolvers[req_id];
+				delete this.get_resolvers[this.req_id];
 				resolve(0);
-			}, 5000);			
-			
-			this.get_resolvers[req_id]=(data)=>{				
+			}, 5000);
+
+			this.get_resolvers[this.req_id] = (data) => {
 				clearTimeout(timeoutId);
-				resolve(data);					
-			}
+				resolve(data);
+			};
+
+			this.safe_send({cmd,req_id:this.req_id,...params});
 			
-			/*
-			this.get_resolvers[req_id] = {
-				resolve: (data) => {
-					clearTimeout(timeoutId);
-					resolve(data);
-				}
-			};*/
-			
-			this.socket.send(JSON.stringify({cmd:'get',path,req_id,limit_last}))				
-		
-		})	
+			this.reset_keep_alive('req');
+		});
+	},
+
+	get(path, limit_last) {
+		return this.make_req('get', {path, limit_last});
+	},
+
+	get_tms() {
+		return this.make_req('get_tms');
 	},
 	
 	ss_child_added(path,callback){
 		
-		this.socket.send(JSON.stringify({cmd:'child_added',path}))	
+		this.safe_send({cmd:'child_added',path});	
 		this.child_added[path]=callback;
 		
 	},
 
 	ss_child_changed(path,callback){
 		
-		this.socket.send(JSON.stringify({cmd:'child_changed',node:path}))	
+		this.safe_send({cmd:'child_changed',node:path});
 		this.child_changed[path]=callback;
 		
 	},
 	
 	ss_child_removed(path,callback){
 		
-		this.socket.send(JSON.stringify({cmd:'child_removed',node:path}))	
+		this.safe_send({cmd:'child_removed',node:path});
 		this.child_removed[path]=callback;
 		
 	}	
