@@ -204,3 +204,26 @@ my_ws={
 	}	
 		
 }
+
+function safe_ls(key, value = null) {
+  try {
+    if (value === null) {
+      // Read
+      const data = localStorage.getItem(key);
+      if (!data) return null;
+      // Try parsing as JSON, fallback to raw string
+      try {
+        return JSON.parse(data);
+      } catch {
+        return data; // Return as-is if not JSON
+      }
+    } else {
+      // Write
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    }
+  } catch (e) {
+    console.error(`Storage error for key "${key}":`, e);
+    return null; // or false for write
+  }
+}
