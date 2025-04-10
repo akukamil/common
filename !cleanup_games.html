@@ -105,6 +105,8 @@ async function clean_balda() {
 	await delete_zombie_players("states7");
 	await delete_zombie_players("states8");
 	await delete_zombie_players("states9");
+	await delete_zombie_players("states10");
+	await delete_zombie_players("states11");
 	await firebase.app().delete();
 	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
 
