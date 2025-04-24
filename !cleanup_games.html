@@ -168,6 +168,24 @@ async function clean_poker() {
 
 }
 
+async function clean_word_game() {
+	document.body.innerHTML += "Буквоед<br />";
+	firebase.initializeApp({
+		apiKey: "AIzaSyDs76rLdiq2ouIfQwT_vLff-vYGdyeOLqw",
+		authDomain: "word-connect-88656.firebaseapp.com",
+		databaseURL: "https://word-connect-88656-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "word-connect-88656",
+		storageBucket: "word-connect-88656.appspot.com",
+		messagingSenderId: "783317843458",
+		appId: "1:783317843458:web:5d6783ea5cc0a31b9db11b"
+	});
+
+	await delete_old_playersWORDS();
+	await firebase.app().delete();
+	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
+
+}
+
 async function clean_quoridor() {
 	document.body.innerHTML += "Quoridor<br />";
 	firebase.initializeApp({
@@ -223,6 +241,7 @@ async function start_cleanup() {
 	await clean_poker();	
 	await clean_quoridor();	
 	await clean_domino();	
+	await clean_word_game();	
 	document.body.innerHTML += "Завершено!";
 	
 }
@@ -348,6 +367,35 @@ async function delete_old_playersPOKER() {
 
 }
 
+//удалить старых игроков буквоеда
+async function delete_old_playersWORDS() {	
+
+	let snapshot = await firebase.database().ref("players").once("value");
+	let total_removed=0;
+	const cur_ts=Date.now();
+	let data = snapshot.val();
+	if (data===null) return;
+	
+	//немного меняем данные
+	data = Object.keys(data).map(key => [key, data[key]?.PRV?.tm]);
+		
+	for (let p of data) {	
+	
+		const days_without_visit=(cur_ts-p[1])/86400000;
+		const days_without_allowed=14;
+		if (days_without_visit>days_without_allowed) {
+
+			await firebase.database().ref("players/"+p[0]).remove();
+			console.log('Удален '+ p[0] + ' rating: '+ p[1])
+
+			total_removed++;
+		}	
+	}
+	
+	
+	document.body.innerHTML += "Удалено старых игроков: "+total_removed +"<br />";
+
+}
 
 	
 </script>
