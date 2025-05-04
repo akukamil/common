@@ -127,6 +127,7 @@ async function clean_durak() {
 	await delete_zombie_players("states1");
 	await delete_zombie_players("states2");
 	await delete_zombie_players("states3");
+	await delete_zombie_players("states4");
 	await firebase.app().delete();
 	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
 
