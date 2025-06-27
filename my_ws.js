@@ -87,6 +87,7 @@ my_ws={
 			const msg=JSON.parse(event.data);
 			//console.log("Получено от сервера:", msg);
 			
+			//вызов коллбэк функции для нода если она подписана
 			if (msg.event==='child_added')	
 				this.child_added[msg.node]?.(msg);
 			
@@ -153,7 +154,9 @@ my_ws={
 		},this.keep_alive_time);
 		
 	},
-	
+		
+	//make_req('set',{path:'players/debug100/rating',val:123})
+	//make_req('set',{path:'players/debug100',val:{rating:100,name:'kamil',tm:'TMS'}})
 	make_req(cmd, params = {}) {
 		return new Promise(resolve => {
 			this.req_id++;
@@ -173,7 +176,8 @@ my_ws={
 			this.reset_keep_alive('req');
 		});
 	},
-
+	
+	//limit_last - это только для массивов
 	get(path, limit_last) {
 		return this.make_req('get', {path, limit_last});
 	},
@@ -191,14 +195,14 @@ my_ws={
 
 	ss_child_changed(path,callback){
 		
-		this.safe_send({cmd:'child_changed',node:path});
+		this.safe_send({cmd:'child_changed',path});
 		this.child_changed[path]=callback;
 		
 	},
 	
 	ss_child_removed(path,callback){
 		
-		this.safe_send({cmd:'child_removed',node:path});
+		this.safe_send({cmd:'child_removed',path});
 		this.child_removed[path]=callback;
 		
 	}	
