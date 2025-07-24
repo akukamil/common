@@ -5,7 +5,6 @@ irnd = function(min,max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
 my_ws={
 
 	socket:0,
@@ -42,6 +41,7 @@ my_ws={
 
 	safe_send(data){
 		this.socket.send(JSON.stringify(data))
+		this.reset_keep_alive('safe_send')
 	},
 
 	send_to_sleep(){
@@ -173,10 +173,10 @@ my_ws={
 
 	},
 
-
 	/*
 		make_req('set',{path:'players/debug100/rating',val:123})
 		make_req('set',{path:'players/debug100',val:{rating:100,name:'kamil',tm:'TMS'}})
+		my_ws.make_req('remove',{path:'bg'})
 	*/
 	make_req(cmd, params = {}) {
 		return new Promise(resolve => {
