@@ -156,7 +156,7 @@ my_ws={
 	},
 
 	reset_keep_alive(reason){
-		console.log('reset_keep_alive',reason)
+		//console.log('reset_keep_alive',reason)
 		clearInterval(this.keep_alive_timer)
 		this.keep_alive_timer=setTimeout(()=>{
 
