@@ -194,7 +194,7 @@ my_ws={
 
 			this.safe_send({cmd,req_id:this.req_id,...params})
 
-			this.reset_keep_alive('req')
+			//this.reset_keep_alive('req')
 		});
 	},
 
