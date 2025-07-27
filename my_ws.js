@@ -255,7 +255,8 @@ safe_ls=function(key, value = null) {
 				return data;
 			}
 		} else {
-			localStorage.setItem(key, JSON.stringify(value));
+			const storageValue = typeof value === 'string' ? value : JSON.stringify(value)
+			localStorage.setItem(key, storageValue);
 			return true;
 		}
 	} catch (e) {
