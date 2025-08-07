@@ -179,17 +179,21 @@ my_ws={
 		my_ws.make_req('remove',{path:'bg'})
 	*/
 	make_req(cmd, params = {}) {
-		return new Promise(resolve => {
+				
+		return new Promise(res => {
+			
+			if (this.sleep) res(0)
+			
 			this.req_id++
 
 			const timeoutId = setTimeout(() => {
 				delete this.get_resolvers[this.req_id]
-				resolve(0);
+				res(0);
 			}, 5000);
 
 			this.get_resolvers[this.req_id] = (data) => {
 				clearTimeout(timeoutId)
-				resolve(data)
+				res(data)
 			};
 
 			this.safe_send({cmd,req_id:this.req_id,...params})
