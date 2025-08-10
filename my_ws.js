@@ -248,9 +248,9 @@ my_ws={
 	},
 }
 
-safe_ls=function(key, value = null) {
+safe_ls=function(key, val) {
 	try {
-		if (value === null) {
+		if (val === null || val===undefined) {
 			const data = localStorage.getItem(key);
 			if (!data) return null;
 			try {
@@ -259,7 +259,7 @@ safe_ls=function(key, value = null) {
 				return data;
 			}
 		} else {
-			const storageValue = typeof value === 'string' ? value : JSON.stringify(value)
+			const storageValue = typeof val === 'string' ? val : JSON.stringify(val)
 			localStorage.setItem(key, storageValue);
 			return true;
 		}
