@@ -40,6 +40,7 @@ my_ws={
 	},
 
 	safe_send(data){
+		if (this.sleep||this.socket.readyState!==1) return
 		this.socket.send(JSON.stringify(data))
 		this.reset_keep_alive('safe_send')
 	},
