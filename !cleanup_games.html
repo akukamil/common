@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<svg id="mySvg" width="100" height="100"></svg>
 <html>
 <body>
 
@@ -6,9 +7,13 @@
 <meta name="http-equiv" content="Content-type: text/html; charset=windows-1251">
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-  
+<script src="my_ws.js"></script>
+<script src="multiavatar.min.txt"></script>
+<script src="clean_stuff.js"></script>
   
 <script>
+
+
 
 start_cleanup();
 
@@ -94,18 +99,6 @@ async function clean_balda() {
 		appId: "1:67392486991:web:e3b8b40f8c48670c1df43a"
 	});
 	await delete_old_players();
-	await new Promise((resolve, reject) => setTimeout(resolve, 7000));
-	await delete_zombie_players("states1");
-	await delete_zombie_players("states2");
-	await delete_zombie_players("states3");
-	await delete_zombie_players("states4");	
-	await delete_zombie_players("states5");		
-	await delete_zombie_players("states6");		
-	await delete_zombie_players("states7");
-	await delete_zombie_players("states8");
-	await delete_zombie_players("states9");
-	await delete_zombie_players("states10");
-	await delete_zombie_players("states11");
 	await firebase.app().delete();
 	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
 
@@ -128,6 +121,25 @@ async function clean_durak() {
 	await delete_zombie_players("states2");
 	await delete_zombie_players("states3");
 	await delete_zombie_players("states4");
+	await firebase.app().delete();
+	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
+
+}
+
+async function clean_pool() {
+	document.body.innerHTML += "Бильярд<br />";
+	firebase.initializeApp({
+		apiKey: "AIzaSyDpyFhFCM2Wv7y9e6LycQTIkWl8RreNHI0",
+		authDomain: "pool-f7e49.firebaseapp.com",
+		databaseURL: "https://pool-f7e49-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "pool-f7e49",
+		storageBucket: "pool-f7e49.appspot.com",
+		messagingSenderId: "127048378193",
+		appId: "1:127048378193:web:f06d24482d6a32a0d41570"
+	});
+	await delete_old_players();
+	await new Promise((resolve, reject) => setTimeout(resolve, 7000));
+	await delete_zombie_players("states1");
 	await firebase.app().delete();
 	await new Promise((resolve, reject) => setTimeout(resolve, 5000));
 
@@ -234,15 +246,17 @@ async function clean_domino() {
 
 async function start_cleanup() {
 
-	await clean_corners();
-	await clean_chess();
-	await clean_balda();
-	await clean_durak();
+	document.body.innerHTML='';
+	await clean_corners()
+	await clean_chess()
+	await clean_balda()
+	await clean_durak()
 	await clean_snow_words();
-	await clean_poker();	
-	await clean_quoridor();	
-	await clean_domino();	
-	await clean_word_game();	
+	await clean_poker()
+	await clean_quoridor()
+	await clean_domino()
+	await clean_word_game()
+	await clean_pool()
 	document.body.innerHTML += "Завершено!";
 	
 }
@@ -405,3 +419,5 @@ async function delete_old_playersWORDS() {
 
 </body>
 </html>
+
+
