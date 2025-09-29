@@ -181,7 +181,8 @@ tools={
 	},
 	
 	async get_player_by_name(s_name, threshold = 0.8){		
-	
+		
+		s_name=s_name.toUpperCase()
 		if (!fbs_data[game_name].players)		
 			fbs_data[game_name].players=await fbs_once('players')		
 		const pdata=fbs_data[game_name].players				
@@ -189,8 +190,8 @@ tools={
 		for (const uid in pdata){
 			
 			const player_data=pdata[uid]
-			const name=player_data.name
-			if (areStringsSimilar(name,s_name,threshold)){
+			const name=player_data.name.toUpperCase()
+			if (name.includes(s_name)){
 				console.log(uid,player_data)
 			}			
 		}			
