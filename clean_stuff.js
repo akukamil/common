@@ -1,4 +1,4 @@
-let fbs;
+﻿let fbs;
 game_name='pool';
 my_data={uid:'debug100'};
 fbs_data={
@@ -57,7 +57,7 @@ fbs_data={
 		messagingSenderId: "1059246829657",
 		appId: "1:1059246829657:web:478f1005543df13e3fc148"
 	},
-	word_connect:{
+	word_game:{
 		apiKey: "AIzaSyDs76rLdiq2ouIfQwT_vLff-vYGdyeOLqw",
 		authDomain: "word-connect-88656.firebaseapp.com",
 		databaseURL: "https://word-connect-88656-default-rtdb.europe-west1.firebasedatabase.app",
@@ -65,6 +65,15 @@ fbs_data={
 		storageBucket: "word-connect-88656.appspot.com",
 		messagingSenderId: "783317843458",
 		appId: "1:783317843458:web:5d6783ea5cc0a31b9db11b"
+	},
+	melody:{
+		apiKey: "AIzaSyBG9xnBLS3eGtn7gy58hNVJBSBVUymxA0I",
+		authDomain: "melody-4ab2b.firebaseapp.com",
+		databaseURL: "https://melody-4ab2b-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "melody-4ab2b",
+		storageBucket: "melody-4ab2b.appspot.com",
+		messagingSenderId: "950545734258",
+		appId: "1:950545734258:web:bddf99bf8907891702c0eb"
 	},
 	quoridor:{
 		apiKey: "AIzaSyDwyhzpCq06nXWtzTfPZ86I0jI_iUedJDg",
@@ -154,7 +163,7 @@ fbs_once=async (path)=>{
 	return info.val();	
 }
 
-fbs_connect=async (game)=>{	
+fbs_connect=async (game, no_ws)=>{	
 
 
 	game_name=game;
@@ -165,11 +174,11 @@ fbs_connect=async (game)=>{
 	firebase.initializeApp(fbs_data[game]);	
 	fbs=firebase.database();	
 	
-	if (my_ws.socket)
-		my_ws.kill();
-	my_ws.init();
+	if(no_ws) return
 	
-
+	if (my_ws.socket) my_ws.kill()
+	my_ws.init()
+	
 }
 
 tools={
@@ -190,7 +199,7 @@ tools={
 		for (const uid in pdata){
 			
 			const player_data=pdata[uid]
-			const name=player_data.name.toUpperCase()
+			const name=(player_data?.name||'???').toUpperCase()
 			if (name.includes(s_name)){
 				console.log(uid,player_data)
 			}			
@@ -206,7 +215,7 @@ tools={
 		const players=fbs_data[game_name].players
 		
 		if (!players){
-			alert('не удалось получить данные.')
+			addLog('Данные об игроках пустые...')
 			return
 		} 
 
@@ -227,14 +236,55 @@ tools={
 				}	
 			}	
 			
-			if (!player.tm||!player.rating) {				
+			if (player&&(!player.tm)) {				
 				await fbs.ref('players/'+uid).remove()
+				player.tm=111
 				console.log('INVALID: '+ uid + ' rating: '+ player.rating)
 				total_removed++
 			}				
 		}
 				
-		document.body.innerHTML += "Удалено старых игроков: "+total_removed +"<br />"
+		addLog("Удалено старых игроков: "+total_removed)
+		
+	},
+	
+	async remove_old_poker(days_without_allowed=30){
+		
+		//если нету игроков		
+		if (!fbs_data[game_name].players)
+			fbs_data[game_name].players = await fbs_once('players')	
+		const players=fbs_data[game_name].players
+		
+		if (!players){
+			addLog('Данные об игроках пустые...')
+			return
+		} 
+
+		let total_removed=0
+		const tm=Date.now()
+			
+		for (const uid of Object.keys(players)) {	
+		
+			const player=players[uid]
+			
+			//проверяем на валидность рейтинга
+			if (player&&player.tm) {				
+				const days_without_visit=(tm-player.tm)/86400000
+				if (days_without_visit>days_without_allowed) {
+					await fbs.ref('players/'+uid).remove()
+					console.log('Удален '+ uid + ' rating: '+ player.rating)
+					total_removed++
+				}	
+			}	
+			
+			if (player&&(!player.tm)) {				
+				await fbs.ref('players/'+uid).remove()
+				console.log('INVALID: '+ uid + ' rating: '+ player.PUP.rating)
+				total_removed++
+			}				
+		}
+				
+		addLog("Удалено старых игроков: "+total_removed)
 		
 	},
 	
@@ -242,12 +292,18 @@ tools={
 		
 		const data = await fbs_once(room_name);
 		if (!data) {
-			alert('Ошибка получения данных о комнате');
+			addLog('Ошибка получения данных о комнате: '+room_name);
 			return;
-		};
+		}
 	
-		let total_removed = 0;	
-
+		let total_removed = 0
+		
+		const players=fbs_data[game_name].players
+		if(!players){
+			
+			addLog('Нет данных о игроках, выходим...')
+			return
+		}
 		
 		//создаем массив для последующей работы
 		let uids = Object.keys(data);
@@ -255,7 +311,8 @@ tools={
 		for (let i = 0 ; i < uids.length ; i++) {
 		
 			//добавляем инфу о последнем посещении
-			const player_last_seen=this.players.tm;
+			const uid=uids[i]
+			const player_last_seen=players[uid]?.tm||9999;
 			
 			//не видно уже 1 час но есть в комнате
 			const not_seen = tm - player_last_seen;
@@ -265,7 +322,7 @@ tools={
 			}
 		}	
 		
-		document.body.innerHTML += room +" - Удалено зомби игроков: "+total_removed +"<br />";
+		addLog(room +" - Удалено зомби игроков: "+total_removed);
 		
 	},
 	
@@ -286,7 +343,44 @@ tools={
 		console.log(msg);
 		my_ws.safe_send({cmd:'push',path:'chat',val:{uid:'admin',name:'Админ',msg,tm:'TMS'}})
 		
-	}
+	},
 		
+	async clean_all(){
+				
+		const game_data=[		
+			{game:'corners',rooms:['states1','states2','states3','states4','statesNIGHT']},
+			{game:'domino',rooms:['states1','states2','states3','states4','states5','states6','states7','states8']},
+			{game:'durak',rooms:['states1','states2','states3','states4','statesNIGHT']},
+			{game:'chess',rooms:['states1','states2','states3','states4']},
+			{game:'pool',rooms:['states1']},
+			{game:'poker',rooms:[]},
+			{game:'balda',rooms:[]},
+			{game:'word_game',rooms:[]},
+			{game:'quoridor',rooms:['states']},
+			{game:'snow_words',rooms:['states','states2']},			
+			{game:'melody',rooms:[]}			
+		]
+		
+		for (data of game_data){
+			addLog(`${data.game}`);
+			
+			await fbs_connect(data.game,1)
+			await new Promise(resolve => setTimeout(resolve, 1500))
+			
+			if (data.game==='poker')
+				await this.remove_old_poker()
+			else
+				await this.remove_old()			
+			
+			const rooms=data.rooms
+			for (room of rooms)
+				await this.clean_room(room)			
+			
+		}
+	
+		addLog('завершено!');
+		
+		
+	}
 	
 }
