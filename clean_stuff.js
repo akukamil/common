@@ -104,60 +104,6 @@ fbs_data={
 	}
 }
 
-function areStringsSimilar(str1, str2, threshold = 0.8) {
-	
-  // Handle edge cases
-  if (!str1 || !str2) return false;
-  if (str1 === str2) return true;
-  
-  // Normalize strings: convert to lowercase and remove non-alphabetic characters
-  const normalize = (str) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
-  
-  const normalizedStr1 = normalize(str1);
-  const normalizedStr2 = normalize(str2);
-  
-  // If either normalized string is empty, they're not similar
-  if (!normalizedStr1 || !normalizedStr2) return false;
-  
-  // Check if one string contains the other
-  if (normalizedStr1.includes(normalizedStr2) || normalizedStr2.includes(normalizedStr1)) {
-    return true;
-  }
-  
-  // Calculate similarity using Levenshtein distance
-  const levenshteinDistance = (s1, s2) => {
-    const m = s1.length;
-    const n = s2.length;
-    
-    // Create a matrix of size (m+1) x (n+1)
-    const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
-    
-    // Initialize the matrix
-    for (let i = 0; i <= m; i++) dp[i][0] = i;
-    for (let j = 0; j <= n; j++) dp[0][j] = j;
-    
-    // Fill the matrix
-    for (let i = 1; i <= m; i++) {
-      for (let j = 1; j <= n; j++) {
-        const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
-        dp[i][j] = Math.min(
-          dp[i - 1][j] + 1,      // deletion
-          dp[i][j - 1] + 1,      // insertion
-          dp[i - 1][j - 1] + cost // substitution
-        );
-      }
-    }
-    
-    return dp[m][n];
-  };
-  
-  const distance = levenshteinDistance(normalizedStr1, normalizedStr2);
-  const maxLength = Math.max(normalizedStr1.length, normalizedStr2.length);
-  const similarity = 1 - distance / maxLength;
-  
-  return similarity >= threshold;
-}
-
 fbs_once=async (path)=>{
 	const info=await fbs.ref(path).get();
 	return info.val();	
@@ -189,7 +135,7 @@ tools={
 		
 	},
 	
-	async get_player_by_name(s_name, threshold = 0.8){		
+	async get_player_by_name(s_name){		
 		
 		s_name=s_name.toUpperCase()
 		if (!fbs_data[game_name].players)		
@@ -200,7 +146,7 @@ tools={
 			
 			const player_data=pdata[uid]
 			const name=(player_data?.name||'???').toUpperCase()
-			if (name.includes(s_name)){
+			if (name===s_name){
 				console.log(uid,player_data)
 			}			
 		}			
