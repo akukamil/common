@@ -300,7 +300,7 @@ tools={
 			{game:'chess',rooms:['states1','states2','states3','states4']},
 			{game:'pool',rooms:['states1']},
 			{game:'poker',rooms:[]},
-			{game:'balda',rooms:[]},
+			{game:'balda',rooms:['statesNIGHT']},
 			{game:'word_game',rooms:[]},
 			{game:'quoridor',rooms:['states']},
 			{game:'snow_words',rooms:['states','states2']},			
