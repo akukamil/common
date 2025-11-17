@@ -146,7 +146,7 @@ tools={
 			
 			const player_data=pdata[uid]
 			const name=(player_data?.name||'???').toUpperCase()
-			if (name===s_name){
+			if (name.includes(s_name)){
 				console.log(uid,player_data)
 			}			
 		}			
