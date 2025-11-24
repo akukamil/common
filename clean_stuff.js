@@ -218,14 +218,14 @@ tools={
 				const days_without_visit=(tm-player.tm)/86400000
 				if (days_without_visit>days_without_allowed) {
 					await fbs.ref('players/'+uid).remove()
-					console.log('Удален '+ uid + ' rating: '+ player.rating)
+					console.log('Удален '+ uid + ' rating: '+ player?.PUB?.rating)
 					total_removed++
 				}	
 			}	
 			
 			if (player&&(!player.tm)) {				
 				await fbs.ref('players/'+uid).remove()
-				console.log('INVALID: '+ uid + ' rating: '+ player.PUP.rating)
+				console.log('INVALID: '+ uid + ' rating: '+ player?.PUB?.rating)
 				total_removed++
 			}				
 		}
