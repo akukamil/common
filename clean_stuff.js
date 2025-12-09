@@ -153,6 +153,18 @@ tools={
 		
 	},
 		
+	async get_player_by_part_of_uid(part_of_uid){
+		
+		if (!fbs_data[game_name].players)		
+			fbs_data[game_name].players=await fbs_once('players')
+		
+		const pdata=fbs_data[game_name].players	
+		for (const uid in pdata){
+			if (uid.includes(part_of_uid))
+				console.log(uid,pdata[uid])
+		}
+	},
+		
 	async remove_old(days_without_allowed=30){
 		
 		//если нету игроков		
