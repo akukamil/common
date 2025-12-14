@@ -307,7 +307,7 @@ tools={
 				
 		const game_data=[		
 			{game:'corners',rooms:['states1','states2','states3','states4','statesNIGHT']},
-			{game:'domino',rooms:['states1','states2','states3','states4','states5','states6','states7','states8']},
+			{game:'domino',rooms:['states1','states2','states3','states4','states5','states6','states7','states8','states9']},
 			{game:'durak',rooms:['states1','states2','states3','states4','statesNIGHT']},
 			{game:'chess',rooms:['states1','states2','states3','states4']},
 			{game:'pool',rooms:['states1']},
