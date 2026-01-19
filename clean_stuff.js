@@ -101,7 +101,18 @@ fbs_data={
 		storageBucket: "pool-f7e49.appspot.com",
 		messagingSenderId: "127048378193",
 		appId: "1:127048378193:web:f06d24482d6a32a0d41570"
+	},
+	monopoly:{
+		apiKey: "AIzaSyCXmV64Bydyie1QsViyBPprtfSe1qpljt4",
+		authDomain: "monopoly-b6de9.firebaseapp.com",
+		databaseURL: "https://monopoly-b6de9-default-rtdb.europe-west1.firebasedatabase.app",
+		projectId: "monopoly-b6de9",
+		storageBucket: "monopoly-b6de9.firebasestorage.app",
+		messagingSenderId: "226062460929",
+		appId: "1:226062460929:web:0afbd5f23cd9a76ee7f800"
 	}
+	
+	
 }
 
 fbs_once=async (path)=>{
@@ -152,6 +163,25 @@ tools={
 		}			
 		
 	},
+	
+	async get_player_by_nameSTRICT(s_name){		
+		
+		s_name=s_name.toUpperCase()
+		if (!fbs_data[game_name].players)		
+			fbs_data[game_name].players=await fbs_once('players')		
+		const pdata=fbs_data[game_name].players				
+				
+		for (const uid in pdata){
+			
+			const player_data=pdata[uid]
+			const name=player_data?.name||'???'
+			if (name===s_name){
+				console.log(uid,player_data)
+			}			
+		}			
+		
+	},
+	
 		
 	async get_player_by_part_of_uid(part_of_uid){
 		
@@ -246,6 +276,22 @@ tools={
 		
 	},
 	
+	async show_last_players(num=100){
+		
+		if (!fbs_data[game_name].players)		
+			fbs_data[game_name].players=await fbs_once('players')		
+		
+		const players_array=Object.entries(fbs_data[game_name].players)
+		
+		players_array=Object.entries(players).map(([uid, data]) => ({
+		  uid,name:data.name,rating:data.rating,tm:data.tm
+		}));				
+		
+		players_array.sort((a,b)=>{return b.tm-a.tm})
+		console.table(players_array)
+		
+	},
+	
 	async clean_room(room_name){
 		
 		const data = await fbs_once(room_name);
@@ -316,6 +362,7 @@ tools={
 			{game:'word_game',rooms:[]},
 			{game:'quoridor',rooms:['states']},
 			{game:'snow_words',rooms:['states','states2']},			
+			{game:'monopoly',rooms:['states2']},			
 			{game:'melody',rooms:[]}			
 		]
 		
