@@ -181,8 +181,7 @@ tools={
 		}			
 		
 	},
-	
-		
+			
 	async get_player_by_part_of_uid(part_of_uid){
 		
 		if (!fbs_data[game_name].players)		
@@ -354,7 +353,7 @@ tools={
 		const game_data=[		
 			{game:'corners',rooms:['states1','states2','states3','states4','statesNIGHT']},
 			{game:'domino',rooms:['states1','states2','states3','states4','states5','states6','states7','states8','states9']},
-			{game:'durak',rooms:['states1','states2','states3','states4','statesNIGHT']},
+			{game:'durak',rooms:['states1','states2','states3','states4','states5','statesNIGHT']},
 			{game:'chess',rooms:['states1','states2','states3','states4','statesNIGHT']},
 			{game:'pool',rooms:['states1']},
 			{game:'poker',rooms:[]},
