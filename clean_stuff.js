@@ -282,12 +282,12 @@ tools={
 		
 		const players_array=Object.entries(fbs_data[game_name].players)
 		
-		players_array=Object.entries(players).map(([uid, data]) => ({
+		players_array2=players_array.map(([uid, data]) => ({
 		  uid,name:data.name,rating:data.rating,tm:data.tm
 		}));				
 		
-		players_array.sort((a,b)=>{return b.tm-a.tm})
-		console.table(players_array)
+		players_array2.sort((a,b)=>{return b.tm-a.tm})
+		console.table(players_array2)
 		
 	},
 	
