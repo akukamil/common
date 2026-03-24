@@ -194,9 +194,47 @@ tools={
 		}
 	},
 		
+	async check_crystals(){
+		
+		//если нету игроков
+		if (!fbs_data[game_name].players)
+			fbs_data[game_name].players = await fbs_once('players')	
+		const players=fbs_data[game_name].players
+		
+		if (!players){
+			addLog('Данные об игроках пустые...')
+			return
+		} 
+
+		let total_removed=0
+		const tm=Date.now()
+			
+		for (const uid of Object.keys(players)) {	
+		
+			const player=players[uid]
+		
+			//проверяем на валидность рейтинга
+			if (player&&player.rating>1950) {
+				
+				const crystals=player.crystals
+				const d=tm-player.c_prv_tm
+				const days_passed=Math.floor(d/(1000*60*60))
+				const cur_crystals=crystals-days_passed
+				
+				if (cur_crystals<-10) {
+					await fbs.ref('players/'+uid+'/rating').set(1950)
+					await fbs.ref('players/'+uid+'/crystals').set(0)
+					console.log('Закончились кристаллы',player.name,player.rating)
+				}	
+			}	
+
+		}
+		
+	},
+		
 	async remove_old(days_without_allowed=30){
 		
-		//если нету игроков		
+		//если нету игроков
 		if (!fbs_data[game_name].players)
 			fbs_data[game_name].players = await fbs_once('players')	
 		const players=fbs_data[game_name].players
@@ -214,8 +252,8 @@ tools={
 			const player=players[uid]
 			
 			//проверяем на валидность рейтинга
-			if (player&&player.tm) {				
-				const days_without_visit=(tm-player.tm)/86400000
+			if (player&&player.tm) {
+				let days_without_visit=(tm-player.tm)/86400000
 				if (days_without_visit>days_without_allowed) {
 					await fbs.ref('players/'+uid).remove()
 					console.log('Удален '+ uid + ' rating: '+ player.rating)
@@ -231,7 +269,11 @@ tools={
 			}				
 		}
 				
+				
 		addLog("Удалено старых игроков: "+total_removed)
+		
+		if (game_name==='durak'||game_name==='domino')
+			await this.check_crystals()
 		
 	},
 	
