@@ -143,10 +143,11 @@ tools={
 	show_avatar(pic_url){
 		const svgElement = document.getElementById('mySvg');
 		svgElement.innerHTML = multiavatar(pic_url)
-		
+		svgElement.style.position='fixed'
+		svgElement.style.top='450px'
 	},
 	
-	async get_player_by_name(s_name){		
+	async get_player_by_name(s_name){
 		
 		s_name=s_name.toUpperCase()
 		if (!fbs_data[game_name].players)		
