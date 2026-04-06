@@ -175,7 +175,7 @@ tools={
 		for (const uid in pdata){
 			
 			const player_data=pdata[uid]
-			const name=player_data?.name||'???'
+			const name=(player_data?.name||'???').toUpperCase()
 			if (name===s_name){
 				console.log(uid,player_data)
 			}			
