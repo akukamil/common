@@ -182,6 +182,8 @@ my_ws={
 		make_req('set',{path:'players/debug100/rating',val:123})
 		make_req('set',{path:'players/debug100',val:{rating:100,name:'kamil',tm:'TMS'}})
 		my_ws.make_req('remove',{path:'bg'})
+		my_ws.make_req('remove_arr_elem',{path:'bg'})
+		
 	*/
 	make_req(cmd, params = {}) {
 				
