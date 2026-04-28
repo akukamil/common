@@ -112,7 +112,7 @@ class batch_logger_class{
 }
 
 //логгеры
-loggers={};
+const loggers={};
 
 loggers.chat=new batch_logger_class('chat');
 loggers.sys=new batch_logger_class('sys');
@@ -126,7 +126,7 @@ function str_to_obj(str) {
 	}
 }
 
-g={};
+const g={};
 
 class g_class{
 
@@ -183,7 +183,7 @@ class g_class{
 	check_dead_clients(){
 
 		for (let i=this.clients.length-1;i>=0;i--) {
-			const c = clients[i]
+			const c = this.clients[i]
 			if (c.readyState === WebSocket.CLOSED) {
 				loggers.sys.log('removing_closed: ',this.game,c.uid)
 				this.clients.splice(i, 1)
@@ -217,38 +217,45 @@ class g_class{
 
 	process(path,event,val){
 
-		//потом поменять названия child_added на ca
 		if (event==='ca'){
+			let data=0
 			this.clients.forEach(c => {
 				if(c.child_added_ss[path]){
-					c.send(JSON.stringify({...val,event:'child_added',node:path}))
+					if(!data) data=JSON.stringify({...val,event,node:path})
+					c.send(data)
 				}
 			})
 			return;
 		}
 
 		if (event==='cc'){
+			let data=0
 			this.clients.forEach(c => {
 				if(c.child_changed_ss[path]){
-					c.send(JSON.stringify({...val,event,node:path}))
+					if(!data) data=JSON.stringify({...val,event,node:path})
+					c.send(data)
 				}
 			})
 			return;
 		}
 
 		if (event==='cr'){
+			let data=0
 			this.clients.forEach(c => {
 				if(c.child_removed_ss[path]){
-					c.send(JSON.stringify({key:val,event,node:path}))
+					if(!data) data=JSON.stringify({key:val,event,node:path})
+					c.send(data)
 				}
 			})
 			return;
 		}
 
 		if (event==='vc'){
+			let data=0
 			this.clients.forEach(c => {
 				if(c.value_changed_ss[path]){
-					c.send(JSON.stringify({val,event,node:path}))
+					if(!data) data=JSON.stringify({val,event,node:path})
+					c.send(data)
 				}
 			})
 			return;
@@ -360,7 +367,7 @@ class g_class{
 
 				this.process(path_str0,'vc',node0)
 				this.process(path_str1,'vc',node1)
-				this.process(path_str1+'/'+path[2],'value_changed',node2)
+				this.process(path_str1+'/'+path[2],'vc',node2)
 				return
 			}
 		}
@@ -700,7 +707,6 @@ class g_class{
 		client.on('error', (error) => {
 			loggers.sys.log(this.game,client.uid,'ws_error:', error);
 		});
-
 
 	}
 
