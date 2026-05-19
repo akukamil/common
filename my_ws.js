@@ -1,4 +1,7 @@
 
+const MIN_GIF_ID_INC=100
+const MAX_GIF_ID_INC=414
+
 irnd = function(min,max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
@@ -179,10 +182,11 @@ my_ws={
 	},
 
 	/*
-		make_req('set',{path:'players/debug100/rating',val:123})
-		make_req('set',{path:'players/debug100',val:{rating:100,name:'kamil',tm:'TMS'}})
+		my_ws.make_req('set',{path:'players/debug100/rating',val:123})
+		my_ws.make_req('set',{path:'players/debug100',val:{rating:100,name:'kamil',tm:'TMS'}})
 		my_ws.make_req('remove',{path:'bg'})
 		my_ws.make_req('remove_arr_elem',{path:'bg'})
+		my_ws.make_req('push',{path:'chat',val:{uid:'admin',name:'Админ',msg,tm:'TMS'}})
 		
 	*/
 	make_req(cmd, params = {}) {
