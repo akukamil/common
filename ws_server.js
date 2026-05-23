@@ -243,7 +243,7 @@ class g_class{
 			let data=0
 			this.clients.forEach(c => {
 				if(c.child_removed_ss[path]){
-					if(!data) data=JSON.stringify({key:val,event,node:path})
+					if(!data) data=JSON.stringify({k:val,event,node:path})
 					c.send(data)
 				}
 			})
@@ -604,7 +604,9 @@ class g_class{
 
 			if (msg.cmd==='set'){
 				//batch.log('set command received...');
-				this.set(msg.path,msg.val);
+				this.set(msg.path,msg.val)
+				client.send(JSON.stringify({event:'set',req_id:msg.req_id||-1}))
+				
 			}
 
 			if (msg.cmd==='set_no_event'){
@@ -618,9 +620,10 @@ class g_class{
 			}
 
 			if (msg.cmd==='push'){
-				if (msg.path==='chat')				
-					loggers.chat.log(this.game,msg.val);
-				this.push(msg.path,msg.val);
+				if (msg.path==='chat')
+					loggers.chat.log(this.game,msg.val)
+				this.push(msg.path,msg.val)
+				client.send(JSON.stringify({event:'push',req_id:msg.req_id||-1}))
 			}
 
 			if (msg.cmd==='remove'){
@@ -647,7 +650,7 @@ class g_class{
 				//batch.log(msg.path,'value changed subscribed!');
 			}
 
-			if (msg.cmd==='ca'||msg.cmd==='child_added'){
+			if (msg.cmd==='ca'){
 				client.child_added_ss[msg.path]=1;
 				//batch.log(msg.path,'child added subscribed!');
 			}
